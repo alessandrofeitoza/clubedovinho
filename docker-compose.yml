@@ -1,0 +1,56 @@
+services:
+  php:
+    container_name: clubedovinho-php
+    build:
+      context: ./
+      dockerfile: ./docker/php/Dockerfile
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - clubedovinho_network
+
+  nginx:
+    container_name: clubedovinho-nginx
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '8080:80'
+      - '443:443'
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - clubedovinho_network
+
+  database:
+    container_name: clubedovinho-database
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-clubedovinho}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clubedovinho}
+      POSTGRES_USER: ${POSTGRES_USER:-clubedovinho}
+    networks:
+      - clubedovinho_network
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-clubedovinho}", "-U", "${POSTGRES_USER:-clubedovinho}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database-data:/var/lib/postgresql/data:rw
+
+networks:
+  clubedovinho_network:
+    driver: bridge
+
+volumes:
+  database-data:
+    driver: local
