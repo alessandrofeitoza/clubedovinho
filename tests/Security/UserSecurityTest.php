@@ -14,6 +14,6 @@ class UserSecurityTest extends KernelTestCase
         $hash = UserSecurity::encryptPassword('123456');
 
         $this->assertNotEquals('123456', $hash);
-        $this->assertTrue(UserSecurity::verifyPassword('123456'));
+        $this->assertTrue(UserSecurity::verifyPassword('123456', $hash));
     }
 }
