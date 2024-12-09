@@ -6,20 +6,20 @@ namespace App\ValueObject;
 
 class Address
 {
-    private string $street;
+    public string $street;
 
-    private ?string $number;
+    public ?string $number;
 
-    private ?string $complement = null;
+    public ?string $complement = null;
 
-    private string $district;
+    public string $district;
 
-    private string $city;
+    public string $city;
 
-    private string $state;
+    public string $state;
 
     public function __construct(
-        private string $zip
+        public string $zip
     ) {
     }
 
@@ -106,8 +106,12 @@ class Address
         ];
     }
 
-    public static function fill(array $data): self
+    public static function fill(mixed $data): self
     {
+        if ($data instanceof self) {
+            return $data;
+        }
+
         $address = new self($data['zip']);
 
         foreach ($data as $key => $value) {
