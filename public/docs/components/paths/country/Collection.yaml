@@ -11,4 +11,4 @@ get:
             type: array
             items:
               allOf:
-                - $ref: '../..//responses/country/CountryGetCollectionResponse.yaml'
+                - $ref: '../../schemas/country.yaml'

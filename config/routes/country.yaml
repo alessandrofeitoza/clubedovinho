@@ -1,4 +1,4 @@
-get_list:
+country_get_list:
   path: /api/countries
   controller: App\Controller\CountryController::getList
   methods: [GET]

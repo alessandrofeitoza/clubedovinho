@@ -1,0 +1,17 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+    description: "Identificador da Categoria"
+    example: "123e4567-e89b-12d3-a456-426614174000"
+  name:
+    type: string
+    maxLength: 100
+    description: "Nome da Categoria"
+    example: "Vinho"
+  description:
+    type: string
+    maxLength: 255
+    description: "Descrição da Categoria"
+    example: "Descrição para a categoria Vinhos"
