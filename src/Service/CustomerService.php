@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Customer;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\AuditLogger;
 use App\Repository\Interface\CustomerRepositoryInterface;
 use App\Service\Interface\CustomerServiceInterface;
 use Symfony\Component\Uid\Uuid;
@@ -13,7 +14,8 @@ use Symfony\Component\Uid\Uuid;
 class CustomerService implements CustomerServiceInterface
 {
     public function __construct(
-        private CustomerRepositoryInterface $repository
+        private CustomerRepositoryInterface $repository,
+        private AuditLogger $auditLogger
     ) {
     }
 
@@ -37,6 +39,11 @@ class CustomerService implements CustomerServiceInterface
     {
         $customer = $this->repository->save($customer);
 
+        $this->auditLogger->created(Customer::class, [
+            'id' => $customer->getId(),
+            'name' => $customer->getUser()->getName(),
+        ]);
+
         return $customer;
     }
 
@@ -44,12 +51,22 @@ class CustomerService implements CustomerServiceInterface
     {
         $this->repository->save($customer);
 
+        $this->auditLogger->updated(Customer::class, [
+            'id' => $customer->getId(),
+            'name' => $customer->getUser()->getName(),
+        ]);
+
         return $customer;
     }
 
     public function remove(string $id): void
     {
         $customer = $this->find($id);
+
+        $this->auditLogger->removed(Customer::class, [
+            'id' => $customer->getId(),
+            'name' => $customer->getUser()->getName(),
+        ]);
 
         $this->repository->remove($customer);
     }

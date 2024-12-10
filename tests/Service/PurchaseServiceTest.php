@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\DataFixtures\CategoryFixtures;
-use App\DataFixtures\CountryFixtures;
 use App\DataFixtures\ProductFixtures;
 use App\DataFixtures\PurchaseFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Purchase;
 use App\Enum\PurchaseStatusEnum;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\AuditLogger;
 use App\Repository\CategoryRepository;
 use App\Repository\CountryRepository;
 use App\Repository\CustomerRepository;
@@ -25,6 +24,7 @@ use App\Service\Interface\CustomerServiceInterface;
 use App\Service\Interface\ProductServiceInterface;
 use App\Service\PurchaseService;
 use App\Service\Interface\PurchaseServiceInterface;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Uid\Uuid;
 
@@ -42,20 +42,27 @@ class PurchaseServiceTest extends KernelTestCase
             ->get('doctrine')
             ->getManager();
 
+        $auditLogger = new AuditLogger(
+            new Logger('audit')
+        );
+
         $this->customerService = new CustomerService(
-            new CustomerRepository($entityManager)
+            new CustomerRepository($entityManager),
+            $auditLogger
         );
 
         $this->productService = new ProductService(
             new ProductRepository($entityManager),
-            new CategoryService(new CategoryRepository($entityManager)),
-            new CountryService(new CountryRepository($entityManager))
+            new CategoryService(new CategoryRepository($entityManager), $auditLogger),
+            new CountryService(new CountryRepository($entityManager)),
+            $auditLogger
         );
 
         $this->service = new PurchaseService(
             new PurchaseRepository($entityManager),
             $this->customerService,
-            $this->productService
+            $this->productService,
+            $auditLogger
         );
     }
 

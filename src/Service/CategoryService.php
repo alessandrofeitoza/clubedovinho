@@ -6,14 +6,18 @@ namespace App\Service;
 
 use App\Entity\Category;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\AuditLogger;
 use App\Repository\Interface\CategoryRepositoryInterface;
 use App\Service\Interface\CategoryServiceInterface;
+use Monolog\Attribute\WithMonologChannel;
 use Symfony\Component\Uid\Uuid;
 
+#[WithMonologChannel('audit')]
 class CategoryService implements CategoryServiceInterface
 {
     public function __construct(
-        private CategoryRepositoryInterface $categoryRepository
+        private CategoryRepositoryInterface $categoryRepository,
+        private AuditLogger $auditLogger
     ) {
     }
 
@@ -37,6 +41,11 @@ class CategoryService implements CategoryServiceInterface
     {
         $category = $this->categoryRepository->save($category);
 
+        $this->auditLogger->created(Category::class, [
+            'id' => $category->getId(),
+            'name' => $category->getName(),
+        ]);
+
         return $category;
     }
 
@@ -44,12 +53,22 @@ class CategoryService implements CategoryServiceInterface
     {
         $this->categoryRepository->save($category);
 
+        $this->auditLogger->updated(Category::class, [
+            'id' => $category->getId(),
+            'name' => $category->getName(),
+        ]);
+
         return $category;
     }
 
     public function remove(string $id): void
     {
         $category = $this->find($id);
+
+        $this->auditLogger->removed(Category::class, [
+            'id' => $category->getId(),
+            'name' => $category->getName(),
+        ]);
 
         $this->categoryRepository->remove($category);
     }

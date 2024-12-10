@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Purchase;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\Interface\AuditLoggerInterface;
 use App\Repository\Interface\PurchaseRepositoryInterface;
 use App\Service\Interface\CustomerServiceInterface;
 use App\Service\Interface\ProductServiceInterface;
@@ -18,6 +19,7 @@ class PurchaseService implements PurchaseServiceInterface
         private PurchaseRepositoryInterface $repository,
         private CustomerServiceInterface $customerService,
         private ProductServiceInterface $productService,
+        private AuditLoggerInterface $auditLogger,
     ) {
     }
 
@@ -58,6 +60,11 @@ class PurchaseService implements PurchaseServiceInterface
 
         $purchase = $this->repository->save($purchase);
 
+        $this->auditLogger->created(Purchase::class, [
+            'id' => $purchase->getId(),
+            'customer' => $purchase->getCustomer()->getId(),
+        ]);
+
         return $purchase;
     }
 
@@ -65,12 +72,24 @@ class PurchaseService implements PurchaseServiceInterface
     {
         $this->repository->save($purchase);
 
+        $this->auditLogger->updated(Purchase::class, [
+            'id' => $purchase->getId(),
+            'customer' => $purchase->getCustomer()->getId(),
+            'status' => $purchase->getStatus()->value,
+        ]);
+
         return $purchase;
     }
 
     public function remove(string $id): void
     {
         $purchase = $this->find($id);
+
+        $this->auditLogger->removed(Purchase::class, [
+            'id' => $purchase->getId(),
+            'customer' => $purchase->getCustomer()->getId(),
+            'status' => $purchase->getStatus()->value,
+        ]);
 
         $this->repository->remove($purchase);
     }

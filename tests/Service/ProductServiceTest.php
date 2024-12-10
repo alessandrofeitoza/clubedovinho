@@ -9,6 +9,7 @@ use App\DataFixtures\CountryFixtures;
 use App\DataFixtures\ProductFixtures;
 use App\Entity\Product;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\AuditLogger;
 use App\Repository\CategoryRepository;
 use App\Repository\CountryRepository;
 use App\Repository\ProductRepository;
@@ -18,6 +19,7 @@ use App\Service\Interface\CategoryServiceInterface;
 use App\Service\Interface\CountryServiceInterface;
 use App\Service\ProductService;
 use App\Service\Interface\ProductServiceInterface;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Uid\Uuid;
 
@@ -35,9 +37,13 @@ class ProductServiceTest extends KernelTestCase
             ->get('doctrine')
             ->getManager();
 
+        $auditLogger = new AuditLogger(
+            new Logger('audit')
+        );
 
         $this->categoryService = new CategoryService(
-            new CategoryRepository($entityManager)
+            new CategoryRepository($entityManager),
+            $auditLogger
         );
 
         $this->countryService = new CountryService(
@@ -47,7 +53,8 @@ class ProductServiceTest extends KernelTestCase
         $this->service = new ProductService(
             new ProductRepository($entityManager),
             $this->categoryService,
-            $this->countryService
+            $this->countryService,
+            $auditLogger
         );
     }
 
