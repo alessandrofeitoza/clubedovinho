@@ -29,7 +29,7 @@ class CategoryServiceTest extends KernelTestCase
         );
     }
 
-    public function testFindAllCountriesUsingServiceRetrieveAnArrayOfCategoryEntities(): void
+    public function testFindAllCategoriesUsingServiceRetrieveAnArrayOfCategoryEntities(): void
     {
         $categories = $this->service->findAll();
 

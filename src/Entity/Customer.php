@@ -20,7 +20,7 @@ class Customer
     private string $phone;
 
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist'], orphanRemoval: true)]
     private User $user;
 
     #[ORM\Column]
