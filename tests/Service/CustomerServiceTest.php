@@ -36,10 +36,10 @@ class CustomerServiceTest extends KernelTestCase
 
     public function testFindAllCustomersUsingServiceRetrieveAnArrayOfCustomerEntities(): void
     {
-        $categories = $this->service->findAll();
+        $customers = $this->service->findAll();
 
-        $this->assertCount(3, $categories);
-        $this->assertInstanceOf(Customer::class, $categories[0]);
+        $this->assertCount(3, $customers);
+        $this->assertInstanceOf(Customer::class, $customers[0]);
     }
 
     public function testFindOneCustomerRetrieveAnCustomerEntity(): void

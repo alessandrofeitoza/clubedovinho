@@ -27,6 +27,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             'country' => CountryFixtures::ID_1,
             'category' => CategoryFixtures::ID_1,
             'weight' => 700,
+            'price' => 30.90,
             'additionalInfo' => 'Vinho tinto seco',
         ],
         [
@@ -35,6 +36,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             'country' => CountryFixtures::ID_3,
             'category' => CategoryFixtures::ID_1,
             'weight' => 650,
+            'price' => 29.99,
             'additionalInfo' => 'Vinho Branco',
         ],
         [
@@ -43,6 +45,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             'country' => CountryFixtures::ID_3,
             'category' => CategoryFixtures::ID_1,
             'weight' => 780,
+            'price' => 109.01,
             'additionalInfo' => 'vinho rosé',
         ],
         [
@@ -51,6 +54,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             'country' => CountryFixtures::ID_2,
             'category' => CategoryFixtures::ID_1,
             'weight' => 1500,
+            'price' => 5.89,
             'additionalInfo' => 'O vinho do santo forte',
         ],
     ];
@@ -77,6 +81,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             ));
             $item->setWeight($data['weight']);
             $item->setAdditionalInfo($data['additionalInfo']);
+            $item->setPrice($data['price']);
 
             $this->setReference(self::REFERENCE_PREFIX . '-' . $data['id'], $item);
             $manager->persist($item);
