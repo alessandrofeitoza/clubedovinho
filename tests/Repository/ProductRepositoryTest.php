@@ -87,6 +87,7 @@ class ProductRepositoryTest extends KernelTestCase
         $product->setCategory($category);
         $product->setCountry($country);
         $product->setWeight(500);
+        $product->setPrice(10.90);
         $product->setAdditionalInfo('garrafa cristal');
 
         $this->entityManager->persist($product);

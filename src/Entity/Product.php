@@ -29,6 +29,9 @@ class Product
     #[ORM\Column(type: 'integer')]
     private int $weight;
 
+    #[ORM\Column(type: 'decimal', scale: 2, precision: 10, nullable: true)]
+    private ?float $price;
+
     #[ORM\Column(nullable: true)]
     private null|string $additionalInfo = null;
 
@@ -81,6 +84,16 @@ class Product
     public function setWeight(int $weight): void
     {
         $this->weight = $weight;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): void
+    {
+        $this->price = $price;
     }
 
     public function getAdditionalInfo(): ?string
