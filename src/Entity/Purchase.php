@@ -36,7 +36,7 @@ class Purchase
     private PurchaseStatusEnum $status;
 
     #[ORM\Column(type: 'json')]
-    private array|Address $address;
+    private null|array|Address $address = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     private float $distance;
@@ -102,8 +102,12 @@ class Purchase
         $this->status = $status;
     }
 
-    public function getAddress(): Address
+    public function getAddress(): ?Address
     {
+        if (null === $this->address) {
+            return null;
+        }
+
         return Address::fill($this->address);
     }
 
