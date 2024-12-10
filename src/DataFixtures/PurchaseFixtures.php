@@ -103,7 +103,7 @@ class PurchaseFixtures extends Fixture implements DependentFixtureInterface
                 class: Customer::class
             );
 
-            $address = $customer->getAddresses()[0];
+            $address = $customer->getAddresses()[0] ?? null;
             if (null !== $data['address']) {
                 $address = Address::fill($data['address']);
             }

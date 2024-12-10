@@ -27,10 +27,16 @@ tags:
   - name: Países
   - name: Produtos
 paths:
+  /categories:
+    $ref: './components/paths/category/Collection.yaml'
+  /categories/{id}:
+    $ref: './components/paths/category/Item.yaml'
   /countries:
     $ref: './components/paths/country/Collection.yaml'
 
 components:
   schemas:
+    Category:
+      $ref: './components/schemas/category.yaml'
     Country:
       $ref: './components/schemas/country.yaml'
