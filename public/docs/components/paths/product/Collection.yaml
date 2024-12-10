@@ -1,0 +1,33 @@
+get:
+  tags:
+    - Produtos
+  summary: Recupera uma lista de Produtos
+  responses:
+    '200':
+      description: Lista de Produtos
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '../../schemas/product.yaml'
+
+post:
+  tags:
+    - Produtos
+  summary: Cria um Produto
+  requestBody:
+    description: Produto
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/product.yaml'
+  responses:
+    '201':
+      description: Produto criada
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/product.yaml'
