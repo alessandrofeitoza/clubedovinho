@@ -1,0 +1,33 @@
+get:
+  tags:
+    - Categorias
+  summary: Recupera uma lista de Categorias
+  responses:
+    '200':
+      description: Lista de Categorias
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '../../schemas/category.yaml'
+
+post:
+  tags:
+    - Categorias
+  summary: Cria uma Categoria
+  requestBody:
+    description: Categoria
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/category.yaml'
+  responses:
+    '201':
+      description: Categoria criada
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/category.yaml'

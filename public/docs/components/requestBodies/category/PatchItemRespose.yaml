@@ -1,0 +1,12 @@
+type: object
+properties:
+  name:
+    type: string
+    maxLength: 100
+    description: "Nome da Categoria"
+    example: "Vinho"
+  description:
+    type: string
+    maxLength: 255
+    description: "Descrição da Categoria"
+    example: "Descrição para a categoria Vinhos"
