@@ -1,0 +1,45 @@
+get:
+  parameters:
+    - $ref: '../../parameters/path/id.yaml'
+  tags:
+    - Produtos
+  summary: Recupera um Produto
+  responses:
+    '200':
+      description: Produto encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/product.yaml'
+
+patch:
+  parameters:
+    - $ref: '../../parameters/path/id.yaml'
+  tags:
+    - Produtos
+  summary: Atualiza um Produto
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/product.yaml'
+  responses:
+    '200':
+      description: Produto atualizado
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/product.yaml'
+
+delete:
+  parameters:
+    - $ref: '../../parameters/path/id.yaml'
+  tags:
+    - Produtos
+  summary: Remove uma Produto
+  responses:
+    '204':
+      description: Não possui conteúdo de resposta
+      content:
+        application/json: {}

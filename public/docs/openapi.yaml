@@ -33,6 +33,10 @@ paths:
     $ref: './components/paths/category/Item.yaml'
   /countries:
     $ref: './components/paths/country/Collection.yaml'
+  /products:
+    $ref: './components/paths/product/Collection.yaml'
+  /products/{id}:
+    $ref: './components/paths/product/Item.yaml'
 
 components:
   schemas:
@@ -40,3 +44,5 @@ components:
       $ref: './components/schemas/category.yaml'
     Country:
       $ref: './components/schemas/country.yaml'
+    Product:
+      $ref: './components/schemas/product.yaml'
