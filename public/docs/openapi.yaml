@@ -1,0 +1,36 @@
+openapi: 3.0.2
+info:
+  title: API Clube do Vinho
+  description: |-
+    API responsável por gerenciar o ClubeDoVinho:
+    - Categorias (Category)
+    - Clientes (Customer)
+    - Compras (Purchase)
+    - Países (Country)
+    - Products (Product)
+
+    Links Importantes:
+    - [Github](https://github.com/alessandrofeitoza/clubedovinho)
+
+  license:
+    name: GPLv3
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: /api
+tags:
+  - name: Categorias
+  - name: Clientes
+  - name: Compras
+  - name: Países
+  - name: Produtos
+paths:
+  /countries:
+    $ref: './components/paths/country/Collection.yaml'
+
+components:
+  schemas:
+    Country:
+      $ref: './components/schemas/country.yaml'
