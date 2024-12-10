@@ -57,7 +57,7 @@ docker compose exec -it php bash
 composer install
 ```
 
-2 - Executar as migrations do MySQL/Doctrine
+2 - Executar as migrations do PostGres/Doctrine
 ```bash
 php bin/console doctrine:migrations:migrate -n
 ```
@@ -67,10 +67,6 @@ php bin/console doctrine:migrations:migrate -n
 php bin/console doctrine:fixtures:load -n
 ```
 
-4 - Gerar as chaves de autenticação
-```bash
-php bin/console lexik:jwt:generate-keypair
-```
 
 ### Uso
 
@@ -78,27 +74,7 @@ Depois que tudo estiver configurado e as dependências instaladas, você pode ac
 
 A documentação com os endpoints se encontra em <http://localhost:8080/docs/index.html>
 
-#### Usuário padrão
-Há alguns usuarios que você pode utilizar para fins de teste:
-
-<table>
-<tr>
-<th>email</th>
-<th>senha</th>
-</tr>
-<tr>
-<td>chiquim@example.com</td>
-<td>123456</td>
-</tr>
-<tr>
-<td>maria@example.com</td>
-<td>1q2w3e</td>
-</tr>
-<tr>
-<td>zezim@example.com</td>
-<td>112233</td>
-</tr>
-</table>
+<img src="./public/docs/assets/img/docs.gif" alt="Docs">
 
 </details>
 
@@ -114,13 +90,40 @@ flowchart TD
     HC((HttpClient)) --JsonRequest<--> R[Routes]
     R --> CA[[ControllerApi]]
     CA <--> S[Service]
-    S <--> V{Validator}
-    S <--valid?--> RP[Repository]
     RP <==ORM/Doctrine==> D[(Database)]
-    E((Entity)) <--schema--> RP
-    CA --JsonResponse--> HC
+    S <--> RP[Repository]
+    CA --> ES
+    ES(EventSubscriber) --JsonResponse--> HC
+    RP <--schema--> E((Entity))
 
 ```
+
+
+#### Logs
+Estamos salvando os logs de cada persistencia na base, optamos por fazer esse controle através da camada `Service`, como mostra a figura a seguir:
+
+```mermaid
+flowchart TD
+    Controller --> Service
+    Service ==> A([AuditLogger])
+    A ==> f{{/var/log/audit.log}}
+    Service <--> Repository
+    Repository <--> D[(Database)]
+
+```
+
+#### Response Headers
+Através de uma camada de `EventSubscriber` estamos adicionando um custom header em cada Response
+
+<table>
+<tr>
+<th colspan="2">HEADERS</th>
+</tr>
+<tr>
+<td>X-REQUEST-INFO</td>
+<td>2</td>
+</tr>
+</table>
 
 </details>
 
