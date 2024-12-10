@@ -1,0 +1,24 @@
+customer_get_list:
+  path: /api/customers
+  controller: App\Controller\CustomerController::getList
+  methods: [GET]
+
+customer_get:
+  path: /api/customers/{id}
+  controller: App\Controller\CustomerController::get
+  methods: [GET]
+
+customer_post:
+  path: /api/customers
+  controller: App\Controller\CustomerController::create
+  methods: [POST]
+
+customer_patch:
+  path: /api/customers/{id}
+  controller: App\Controller\CustomerController::update
+  methods: [PATCH]
+
+customer_remove:
+  path: /api/customers/{id}
+  controller: App\Controller\CustomerController::remove
+  methods: [DELETE]
