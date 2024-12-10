@@ -30,6 +30,11 @@ class CategoryControllerTest extends WebTestCase
         $this->assertEquals('Vinho', $responseBody[0]->name);
         $this->assertEquals('8daefa17-f1d9-46ee-9b70-4843db40376b', $responseBody[0]->id);
         $this->assertEquals('Cachaça', $responseBody[1]->name);
+        $this->assertResponseHasHeader('X-REQUEST-INFO');
+        $this->assertEquals(
+            2,
+            $client->getResponse()->headers->get('X-REQUEST-INFO')
+        );
     }
 
     public function testGetOneCategoryByIdIsSuccessful(): void
