@@ -8,10 +8,12 @@ use App\DataFixtures\UserFixtures;
 use App\Entity\Customer;
 use App\Entity\User;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\AuditLogger;
 use App\Repository\CustomerRepository;
 use App\Repository\UserRepository;
 use App\Service\CustomerService;
 use App\Service\Interface\CustomerServiceInterface;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Uid\Uuid;
 
@@ -25,11 +27,15 @@ class CustomerServiceTest extends KernelTestCase
     {
         $kernel = self::bootKernel();
 
+        $auditLogger = new AuditLogger(
+            new Logger('audit')
+        );
         $entityManager = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
         $this->service = new CustomerService(
-            new CustomerRepository($entityManager)
+            new CustomerRepository($entityManager),
+            $auditLogger
         );
         $this->userRepository = new UserRepository($entityManager);
     }

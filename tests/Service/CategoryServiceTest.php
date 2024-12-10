@@ -7,25 +7,38 @@ namespace App\Tests\Service;
 use App\DataFixtures\CategoryFixtures;
 use App\Entity\Category;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\AuditLogger;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryService;
 use App\Service\Interface\CategoryServiceInterface;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Uid\Uuid;
 
 class CategoryServiceTest extends KernelTestCase
 {
     private CategoryServiceInterface $service;
+    private AuditLogger $auditLogger;
+    private TestHandler $testLog;
 
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
+        $container = $kernel->getContainer();
 
-        $entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+        $entityManager = $container->get('doctrine')->getManager();
+
+        $this->auditLogger = new AuditLogger(
+            new Logger('audit')
+        );
+        
+        $this->testLog = new TestHandler();
+        $this->auditLogger->getLogger()->pushHandler($this->testLog);
+
         $this->service = new CategoryService(
-            new CategoryRepository($entityManager)
+            new CategoryRepository($entityManager),
+            $this->auditLogger
         );
     }
 
@@ -74,6 +87,10 @@ class CategoryServiceTest extends KernelTestCase
         $this->service->remove(CategoryFixtures::ID_3);
 
         $this->assertCount(3, $this->service->findAll());
+
+        $this->assertTrue(
+            $this->testLog->hasInfoThatContains('A ' . Category::class . ' entity has been deleted.')
+        );
     }
 
     public function testInsertANewCategory(): void
@@ -89,6 +106,10 @@ class CategoryServiceTest extends KernelTestCase
 
         $this->assertEquals('Category test', $categoryCreated->getName());
         $this->assertEquals('description test', $categoryCreated->getDescription());
+
+        $this->assertTrue(
+            $this->testLog->hasInfoThatContains('A new ' . Category::class . ' has been created.')
+        );
     }
 
     public function testUpdateACategory(): void
@@ -106,5 +127,9 @@ class CategoryServiceTest extends KernelTestCase
         );
 
         $this->assertEquals('description test 2', $categoryUpdated->getDescription());
+
+        $this->assertTrue(
+            $this->testLog->hasInfoThatContains('A ' . Category::class . ' entity has been updated.')
+        );
     }
 }

@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Product;
 use App\Exception\ResourceNotFoundException;
+use App\Logger\Interface\AuditLoggerInterface;
 use App\Repository\Interface\ProductRepositoryInterface;
 use App\Service\Interface\CategoryServiceInterface;
 use App\Service\Interface\CountryServiceInterface;
@@ -18,6 +19,7 @@ class ProductService implements ProductServiceInterface
         private ProductRepositoryInterface $repository,
         private CategoryServiceInterface $categoryService,
         private CountryServiceInterface $countryService,
+        private AuditLoggerInterface $auditLogger
     ) {
     }
 
@@ -43,6 +45,11 @@ class ProductService implements ProductServiceInterface
         $product->setCountry($this->countryService->find($countryId));
         $product = $this->repository->save($product);
 
+        $this->auditLogger->created(Product::class, [
+            'id' => $product->getId(),
+            'name' => $product->getName(),
+        ]);
+
         return $product;
     }
 
@@ -50,12 +57,22 @@ class ProductService implements ProductServiceInterface
     {
         $this->repository->save($product);
 
+        $this->auditLogger->updated(Product::class, [
+            'id' => $product->getId(),
+            'name' => $product->getName(),
+        ]);
+
         return $product;
     }
 
     public function remove(string $id): void
     {
         $product = $this->find($id);
+
+        $this->auditLogger->removed(Product::class, [
+            'id' => $product->getId(),
+            'name' => $product->getName(),
+        ]);
 
         $this->repository->remove($product);
     }
