@@ -1,0 +1,24 @@
+purchase_get_list:
+  path: /api/purchases
+  controller: App\Controller\PurchaseController::getList
+  methods: [GET]
+
+purchase_get:
+  path: /api/purchases/{id}
+  controller: App\Controller\PurchaseController::get
+  methods: [GET]
+
+purchase_post:
+  path: /api/purchases
+  controller: App\Controller\PurchaseController::create
+  methods: [POST]
+
+purchase_patch:
+  path: /api/purchases/{id}
+  controller: App\Controller\PurchaseController::update
+  methods: [PATCH]
+
+purchase_remove:
+  path: /api/purchases/{id}
+  controller: App\Controller\PurchaseController::remove
+  methods: [DELETE]
